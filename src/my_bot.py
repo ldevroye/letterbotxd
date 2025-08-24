@@ -1,27 +1,24 @@
 import os
 import discord
-from discord import client
+from discord import Intents
+from discord.ext import commands
 from dotenv import load_dotenv
 
 from src.db import Database
 
 
-class MyBot(discord.Client):
-    def __init__(self, api_key: str, channel: int, db: Database, prefix: str, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._api_key: str = api_key
+class MyBot(commands.Bot):
+    def __init__(self, channel: int, db: Database, prefix: str, intents: Intents, **kwargs):
+        super().__init__(command_prefix=prefix, intents=intents, **kwargs)
         self._channel: int = channel
         self._db: Database = db
         self._prefix: str = prefix
 
-    async def run(self, **kwargs):
-        super().run(token=self._api_key, **kwargs)
-
     async def on_ready(self):
-        print(f'{client.user} has connected to Discord!')
+        print(f'{self.user} has connected to Discord!')
 
     async def on_message(self, message):
-        if message.author == client.user:
+        if message.author == self.user:
             return
 
         if message.channel.id != self._channel:
@@ -29,26 +26,8 @@ class MyBot(discord.Client):
 
         await self.handle_command(message)
 
-    async def handle_command(self, message: str):
-        print(f"message: {message}")
-
-    """
-    CHATGPT - guez
-    
-    @client.command(name='addmovie')
-    async def add_movie(ctx, *, movie_name):
-        user_id = ctx.author.id
-        username = ctx.author.name
-
-        # Add user if not exists
-        db.add_user(user_id, username)
-
-        # Add movie to global list and user's watchlist
-        if db.add_movie_to_watchlist(user_id, movie_name):
-            await ctx.send(f"Added '{movie_name}' to {username}'s watchlist!")
-        else:
-            await ctx.send(f"'{movie_name}' is already in your watchlist!")
-    """
+    async def handle_command(self, message):
+        print(f"message: {message.content}, {message.author.id}")
 
 
 if __name__ == '__main__':
@@ -56,9 +35,11 @@ if __name__ == '__main__':
     intents = discord.Intents.default()
     intents.message_content = True
 
-    client = MyBot(os.getenv('DISCORD_API_KEY'),
-                   int(os.getenv('DISCORD_CHANNEL_ID')),
-                   Database(False, 'test'),
+    db: Database = Database(False, 'test')
+
+    client = MyBot(int(os.getenv('DISCORD_CHANNEL_ID')),
+                   db,
                    os.getenv('DISCORD_PREFIX'),
                    intents=intents)
-    client.run()
+
+    client.run(os.getenv('DISCORD_API_KEY'))

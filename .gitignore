@@ -3,7 +3,12 @@ __pycache__/
 *.py[codz]
 *$py.class
 .idea/*
-*.env
+./*.env
+/*.env
+
+.\.env
+.env
+
 # C extensions
 *.so
 
@@ -136,8 +141,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
-.envrc
+**/.env
 .venv
 env/
 venv/
@@ -205,4 +209,5 @@ cython_debug/
 # Marimo
 marimo/_static/
 marimo/_lsp/
+__marimo__/
 __marimo__/

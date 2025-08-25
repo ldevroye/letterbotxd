@@ -4,14 +4,15 @@ from discord import Intents
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from src.db import Database
+from src.db import SqlDatabase
+from src.models import PyDatabase
 
 
 class MyBot(commands.Bot):
-    def __init__(self, channel: int, db: Database, prefix: str, intents: Intents, **kwargs):
+    def __init__(self, channel: int, py_db: PyDatabase, prefix: str, intents: Intents, **kwargs):
         super().__init__(command_prefix=prefix, intents=intents, **kwargs)
         self._channel: int = channel
-        self._db: Database = db
+        self._db: PyDatabase = py_db
         self._prefix: str = prefix
 
     async def on_ready(self):
@@ -35,7 +36,7 @@ if __name__ == '__main__':
     intents = discord.Intents.default()
     intents.message_content = True
 
-    db: Database = Database(False, 'test')
+    db: SqlDatabase = SqlDatabase(False, 'test')
 
     client = MyBot(int(os.getenv('DISCORD_CHANNEL_ID')),
                    db,

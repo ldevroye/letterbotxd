@@ -25,7 +25,7 @@ def get_env() -> dict[str: str]:
     return to_ret
 
 
-def start_db() -> Database:
+def start_db() -> SqlDatabase:
     name: str = CONFIG["DB_NAME"]
     create: bool = eval(CONFIG["DB_CREATE"])
     erase: bool = eval(CONFIG["DB_ERASE"])
@@ -38,7 +38,7 @@ def start_db() -> Database:
 
             set_key('.env', 'DB_ERASE', 'False')
 
-        to_ret = Database(create, name)
+        to_ret = SqlDatabase(create, name)
     except:
         raise RuntimeError(
             f'Could not start the database {name} try looking at the .env and "{name}.sql"')
@@ -46,12 +46,12 @@ def start_db() -> Database:
     return to_ret
 
 
-def start_bot(db: Database) -> MyBot:
+def start_bot(py_db: PyDatabase) -> MyBot:
     print(f"Starting bot... listening to {CONFIG["DISCORD_PREFIX"]} commands")
     try:
         to_ret = MyBot(channel=int(CONFIG["DISCORD_CHANNEL_ID"]),
                        prefix=CONFIG["DISCORD_PREFIX"],
-                       db=db,
+                       py_db=py_db,
                        intents=intents)
     except:
         raise RuntimeError(
@@ -66,7 +66,8 @@ def link_bot():
 
 if __name__ == '__main__':
     CONFIG = get_env()
-    database: Database = start_db()
-    bot: MyBot = start_bot(database)
+    sql_database: SqlDatabase = start_db()
+    py_database: PyDatabase = PyDatabase(sql_database)
+    bot: MyBot = start_bot(py_database)
     bot.run(token=CONFIG["DISCORD_API_KEY"])
     link_bot()

@@ -47,7 +47,7 @@ class Table:
         return [e for (e, _) in self._dict_columns]
 
 
-class Database:
+class SqlDatabase:
     def __init__(self, bool_create: bool, file_name: str):
         self._tables: set[Table] = set()
         self._database: sqlite.Connection

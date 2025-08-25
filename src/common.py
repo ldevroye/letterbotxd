@@ -1,6 +1,18 @@
 import uuid
 from dataclasses import dataclass
+from enum import Enum
 from typing import Final, Iterable
+
+
+class RequestType(Enum):
+    GET_USER = 0                    # (id_user: user_infos)
+    GET_TO_WATCH = 1                # (id_to_watch: to_watch_infos)
+    GET_REVIEW = 2                  # ((id_to_watch, id_user): review)
+    GET_RATING = 3                  # ((id_to_watch, id_user): rating)
+    GET_LIST_USER_TO_WATCH = 4      # (id_user: list_to_watch)
+    GET_LIST_TO_WATCH_USERS = 5     # (id_to_watch: list_user)
+    GET_RATING_TO_WATCH = 6         # (id_to_watch: list_ratings)
+    GET_RATING_USER = 7             # (id_user: list_ratings)
 
 
 @dataclass(frozen=True)

@@ -1,4 +1,5 @@
 from src.common import *
+from src.db import SqlDatabase
 
 
 class User:
@@ -73,13 +74,12 @@ class Series(to_watch):
         self._seasons.add(to_add)
 
 
-'''
 class PyDatabase:
     """
     Cache database for the SQL
     """
-    
-    def __init__(self):
+
+    def __init__(self, sql_db: SqlDatabase):
         """
         No review in the cache as they are too long and not requested often. 
         """
@@ -87,6 +87,8 @@ class PyDatabase:
 
         # {movie: {user: rating}}
         self._lst_ratings: dict[id: dict[id: rate]] = dict()
+
+        self._db: SqlDatabase
 
     def get_average_rating(self, m_id: id) -> rate:
         if self._lst_ratings is None:
@@ -98,4 +100,6 @@ class PyDatabase:
             raise KeyError("This movie/anim doesn't exists in the list")
 
         return sum(rates.values) / len(rates)
-'''
+
+    def _get_from_db(self, request_type: RequestType, **options):
+        pass

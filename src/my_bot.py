@@ -4,8 +4,9 @@ from discord import Intents
 from discord.ext import commands
 from dotenv import load_dotenv
 
+from src.common import RequestType
 from src.db import SqlDatabase
-from src.models import PyDatabase
+from src.models.py_db import PyDatabase
 
 
 class MyBot(commands.Bot):
@@ -30,16 +31,19 @@ class MyBot(commands.Bot):
     async def handle_command(self, message):
         print(f"message: {message.content}, {message.author.id}")
 
+        self._db.interact_db(RequestType.GET_USER_RATINGS, user_id="1")
+
 
 if __name__ == '__main__':
     load_dotenv()
     intents = discord.Intents.default()
     intents.message_content = True
 
-    db: SqlDatabase = SqlDatabase(False, 'test')
+    sql_db: SqlDatabase = SqlDatabase(False, 'test')
+    py_db: PyDatabase = PyDatabase(sql_db)
 
     client = MyBot(int(os.getenv('DISCORD_CHANNEL_ID')),
-                   db,
+                   py_db,
                    os.getenv('DISCORD_PREFIX'),
                    intents=intents)
 

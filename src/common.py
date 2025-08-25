@@ -11,8 +11,19 @@ class RequestType(Enum):
     GET_RATING = 3                  # ((id_to_watch, id_user): rating)
     GET_LIST_USER_TO_WATCH = 4      # (id_user: list_to_watch)
     GET_LIST_TO_WATCH_USERS = 5     # (id_to_watch: list_user)
-    GET_RATING_TO_WATCH = 6         # (id_to_watch: list_ratings)
-    GET_RATING_USER = 7             # (id_user: list_ratings)
+    GET_RATINGS_TO_WATCH = 6        # (id_to_watch: list_ratings)
+    GET_USER_RATINGS = 7            # (id_user: list_ratings)
+
+    ADD_USER = 8                    # (id_user, name)
+    ADD_TO_WATCH = 9                # (id_to_watch, title, description)
+    ADD_REVIEW = 10                 # (user_id, to_watch_id, rating, spoil_review, non_spoil_review)
+
+    CHANGE_REVIEW = 11              # (user_id, to_watch_id, rating, spoil_review, non_spoil_review)
+
+    REMOVE_TO_WATCH = 12            # (id_to_watch)
+    REMOVE_REVIEW = 13              # (id_to_watch, id_user)
+    REMOVE_USER = 14                # (id_user)
+
 
 
 @dataclass(frozen=True)

@@ -26,12 +26,14 @@ class MyBot(commands.Bot):
         if message.channel.id != self._channel:
             return
 
-        await self.handle_command(message)
+        if message.content.startswith(self._prefix):
+            await self.handle_command(message)
+        print(f"Message ({message.author.name}): '{message.content}'")
 
     async def handle_command(self, message):
-        print(f"message: {message.content}, {message.author.id}")
+        print(f"Commande ({message.author.id}): {message.content}")
 
-        self._db.interact_db(RequestType.GET_USER_RATINGS, user_id="1")
+        self._db.interact_db(RequestType.ADD_REVIEW, user_idd=1, review="hehe")
 
 
 if __name__ == '__main__':

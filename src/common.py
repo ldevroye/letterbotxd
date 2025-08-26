@@ -24,6 +24,8 @@ class RequestType(Enum):
     REMOVE_REVIEW = 13              # (id_to_watch, id_user)
     REMOVE_USER = 14                # (id_user)
 
+    _NOT_IMPLEMENTED = 15
+
 
 
 @dataclass(frozen=True)

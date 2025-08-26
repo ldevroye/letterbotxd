@@ -79,7 +79,7 @@ class PyDatabase:
         non_spoil_review: str = None
         rating: rate = None
 
-        lst_unknow: list[str] = []
+        lst_unknown: list[str] = []
         for k in options.keys():
             if k == str_user_id:
                 user_id = options[str_user_id]
@@ -103,14 +103,13 @@ class PyDatabase:
                 rating = options[str_rating]
 
             else:
-                lst_unknow.append(k)
+                lst_unknown.append(k)
 
-        if len(lst_unknow) > 0:
-            raise KeyError(f"Unknow keys: {lst_unknow}")
-
-        lst_needed: list[str] = []
+        if len(lst_unknown) > 0:
+            raise KeyError(f"Unknown keys: {lst_unknown}")
 
         # POV: you're piratesoftware
+        lst_needed: list[str] = []
         match request_type:
             case RequestType.GET_USER:  # (user_id: user_infos)
                 if user_id is not None:

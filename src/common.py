@@ -3,29 +3,38 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Final, Iterable
 
+_bgn_print_red: Final[str] = "\033[91m"
+_end_print_red: Final[str] = "\033[0m"
+
+
+def print_err(err: str):
+    """
+    Prints '[ERROR] {err}' in red
+    """
+    print(f"{_bgn_print_red}[ERROR] {err}{_end_print_red}")
+
 
 class RequestType(Enum):
-    GET_USER = 0                    # (id_user: user_infos)
-    GET_TO_WATCH = 1                # (id_to_watch: to_watch_infos)
-    GET_REVIEW = 2                  # ((id_to_watch, id_user): review)
-    GET_RATING = 3                  # ((id_to_watch, id_user): rating)
-    GET_LIST_USER_TO_WATCH = 4      # (id_user: list_to_watch)
-    GET_LIST_TO_WATCH_USERS = 5     # (id_to_watch: list_user)
-    GET_RATINGS_TO_WATCH = 6        # (id_to_watch: list_ratings)
-    GET_USER_RATINGS = 7            # (id_user: list_ratings)
+    GET_USER = 0  # (id_user: user_infos)
+    GET_TO_WATCH = 1  # (id_to_watch: to_watch_infos)
+    GET_REVIEW = 2  # ((id_to_watch, id_user): review)
+    GET_RATING = 3  # ((id_to_watch, id_user): rating)
+    GET_LIST_USER_TO_WATCH = 4  # (id_user: list_to_watch)
+    GET_LIST_TO_WATCH_USERS = 5  # (id_to_watch: list_user)
+    GET_RATINGS_TO_WATCH = 6  # (id_to_watch: list_ratings)
+    GET_USER_RATINGS = 7  # (id_user: list_ratings)
 
-    ADD_USER = 8                    # (id_user, name)
-    ADD_TO_WATCH = 9                # (id_to_watch, title, description)
-    ADD_REVIEW = 10                 # (user_id, to_watch_id, rating, spoil_review, non_spoil_review)
+    ADD_USER = 8  # (id_user, name)
+    ADD_TO_WATCH = 9  # (id_to_watch, title, description)
+    ADD_REVIEW = 10  # (user_id, to_watch_id, rating, spoil_review, non_spoil_review)
 
-    CHANGE_REVIEW = 11              # (user_id, to_watch_id, rating, spoil_review, non_spoil_review)
+    CHANGE_REVIEW = 11  # (user_id, to_watch_id, rating, spoil_review, non_spoil_review)
 
-    REMOVE_TO_WATCH = 12            # (id_to_watch)
-    REMOVE_REVIEW = 13              # (id_to_watch, id_user)
-    REMOVE_USER = 14                # (id_user)
+    REMOVE_TO_WATCH = 12  # (id_to_watch)
+    REMOVE_REVIEW = 13  # (id_to_watch, id_user)
+    REMOVE_USER = 14  # (id_user)
 
     _NOT_IMPLEMENTED = 15
-
 
 
 @dataclass(frozen=True)
@@ -37,7 +46,7 @@ class rate:
             raise ValueError("Rate must be between -1 and 5.")
 
 
-uninitialised_rate: rate = rate(-1.0)
+uninitialised_rate: Final[rate] = rate(-1.0)
 
 
 @dataclass

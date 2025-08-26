@@ -1,7 +1,7 @@
 from typing import Final
 
 from src.db import SqlDatabase
-from src.common import RequestType, to_watch, rate
+from src.common import RequestType, to_watch, rate, print_err
 
 
 class PyDatabase:
@@ -83,22 +83,18 @@ class PyDatabase:
         for k in options.keys():
             if k == str_user_id:
                 user_id = options[str_user_id]
-
             if k == str_user_name:
                 user_name = options[str_user_name]
 
             elif k == str_to_watch_id:
                 to_watch_id = options[str_user_id]
-
             elif k == str_to_watch_title:
                 to_watch_title = options[str_to_watch_title]
 
             elif k == str_spoil_review:
                 spoil_review = options[str_spoil_review]
-
             elif k == str_non_spoil_review:
                 non_spoil_review = options[str_non_spoil_review]
-
             elif k == rating:
                 rating = options[str_rating]
 
@@ -106,7 +102,7 @@ class PyDatabase:
                 lst_unknown.append(k)
 
         if len(lst_unknown) > 0:
-            raise KeyError(f"Unknown keys: {lst_unknown}")
+            print_err(f"Unknown keys: {lst_unknown}")
 
         # POV: you're piratesoftware
         lst_needed: list[str] = []

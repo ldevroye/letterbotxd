@@ -1,6 +1,8 @@
 # letterbotxd
 Discord Python Bot for reviews and film selection on your server.
 
+Based on the famous [letterbox](https://letterboxd.com/)
+
 ## Authors
 - ldevroye
 - No one else (yet)

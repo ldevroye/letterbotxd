@@ -11,7 +11,7 @@ intents.message_content = True
 
 def check_env():
     env: Final[str] = '.env'
-    exmpl: Final[str] = '.env.example'
+    exmpl: Final[str] = env+'.example'
 
     if not os.path.exists(env):
         shutil.copy(exmpl, env)

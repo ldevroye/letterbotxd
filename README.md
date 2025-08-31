@@ -12,7 +12,7 @@ Based on the famous [letterbox](https://letterboxd.com/)
 1. Clone the repository
 2. Install the requirements from '*requirements.txt*' and then start '*main.py*'
 3. Get Discord API error
-4. Put your *Discord API key* at the beginning of the file and the *Channel id* (will change in the future)
+4. Put your *Discord API key* and the *Channel's id* (this will change in the future) in the intended fields of the '*.env*'
 5. Start '*main.py*'
 6. Enjoy the bot
 

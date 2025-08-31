@@ -34,7 +34,10 @@ class RequestType(Enum):
     REMOVE_REVIEW = 13  # (id_to_watch, id_user)
     REMOVE_USER = 14  # (id_user)
 
-    _NOT_IMPLEMENTED = 15
+    PICK_MOVIE = 15  # (id_user)
+
+    _NOT_IMPLEMENTED = 999
+
 
 
 @dataclass(frozen=True)

@@ -16,8 +16,13 @@ class MyBot(commands.Bot):
         self._db: PyDatabase = py_db
         self._prefix: str = prefix
 
+    async def _init_commands(self):
+        self.add_command(_test)
+
     async def on_ready(self):
         print(f'{self.user} has connected to Discord!')
+
+        await self._init_commands()
 
     async def on_message(self, message):
         if message.author == self.user:
@@ -27,7 +32,8 @@ class MyBot(commands.Bot):
             return
 
         if message.content.startswith(self._prefix):
-            await self.handle_command(message)
+            print(f"cmd inputed : {message.content[len(self._prefix)-1:]}")
+            return
 
         print(f"Message ({message.author.name}): '{message.content}'")
 
@@ -35,6 +41,14 @@ class MyBot(commands.Bot):
         print(f"Command ({message.author.id}): {message.content}")
 
         self._db.interact_db(RequestType.ADD_REVIEW, user_idd=1, review="hehe")
+
+
+@commands.command(name='test')
+async def _test(ctx, *args):
+    print("bah test")
+    print(f"command? {args}")
+    pass
+
 
 
 if __name__ == '__main__':

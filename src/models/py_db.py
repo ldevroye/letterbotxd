@@ -31,28 +31,54 @@ class PyDatabase:
 
         return sum(rates.values) / len(rates)
 
-    def _db_get_user(self, user_id: str):
+    def get_user(self, user_id: str):
         raise NotImplementedError
 
-    def _db_get_to_watch(self, to_watch_id: str):
+    def get_to_watch(self, to_watch_id: str):
         raise NotImplementedError
 
-    def _db_get_review(self, user_id: str, to_watch_id: str):
+    def get_review(self, user_id: str, to_watch_id: str):
         raise NotImplementedError
 
-    def _db_get_rating(self, to_watch_id: str, user_id):
+    def get_rating(self, to_watch_id: str, user_id):
         raise NotImplementedError
 
-    def _db_get_user_to_watch(self, user_id: str):
+    def get_user_to_watch(self, user_id: str):
         raise NotImplementedError
 
-    def _db_get_to_watch_users(self, to_watch_id: str):
+    def get_to_watch_users(self, to_watch_id: str):
         raise NotImplementedError
 
-    def _db_get_ratings_to_watch(self, to_watch_id: str):
+    def get_ratings_to_watch(self, to_watch_id: str):
         raise NotImplementedError
 
-    def _db_get_user_ratings(self, user_id: str):
+    def get_user_ratings(self, user_id: str):
+        raise NotImplementedError
+
+    def add_user(self, user_id: str, user_name: str):
+        raise NotImplementedError
+
+    def add_to_watch(self, to_watch_id: str, to_watch_title: str, to_watch_desc: str = None):
+        raise NotImplementedError
+
+    def add_review(self, to_watch_id: str, user_id: str,
+                   spoil_review: str = None, non_spoil_review: str = None, rating: rate = None):
+        raise NotImplementedError
+
+    def change_review(self, to_watch_id: str, user_id: str,
+                      spoil_review: str = None, non_spoil_review: str = None, rating: rate = None):
+        raise NotImplementedError
+
+    def remove_to_watch(self, to_watch_id: str):
+        raise NotImplementedError
+
+    def remove_review(self, to_watch_id: str, user_id: str):
+        raise NotImplementedError
+
+    def remove_user(self, user_id: str):
+        raise NotImplementedError
+
+    def pick_movie(self, user_id: str):
         raise NotImplementedError
 
     def interact_db(self, request_type: RequestType, **options):
@@ -109,86 +135,104 @@ class PyDatabase:
         match request_type:
             case RequestType.GET_USER:  # (user_id: user_infos)
                 if user_id is not None:
-                    self._db_get_user(user_id)
+                    self.get_user(user_id)
                     return
                 lst_needed.append(str_user_id)
 
             case RequestType.GET_TO_WATCH:  # (to_watch_id: to_watch_infos)
                 if to_watch_id is not None:
-                    self._db_get_to_watch(to_watch_id)
+                    self.get_to_watch(to_watch_id)
                     return
                 lst_needed.append(str_to_watch_id)
 
             case RequestType.GET_REVIEW:  # ((to_watch_id, user_id): review)
                 if to_watch_id is not None and user_id is not None:
-                    self._db_get_review(to_watch_id=to_watch_id, user_id=user_id)
+                    self.get_review(to_watch_id=to_watch_id, user_id=user_id)
                     return
                 lst_needed.extend([str_user_id, str_to_watch_id])
 
             case RequestType.GET_RATING:  # ((to_watch_id, user_id): rating)
                 if to_watch_id is not None and user_id is not None:
-                    self._db_get_rating(to_watch_id=to_watch_id, user_id=user_id)
+                    self.get_rating(to_watch_id=to_watch_id, user_id=user_id)
                     return
                 lst_needed.extend([str_user_id, str_to_watch_id])
 
             case RequestType.GET_LIST_USER_TO_WATCH:  # (user_id: list_to_watch)
                 if user_id is not None:
-                    self._db_get_user_to_watch(user_id)
+                    self.get_user_to_watch(user_id)
                     return
                 lst_needed.append(str_user_id)
 
             case RequestType.GET_LIST_TO_WATCH_USERS:  # (to_watch_id: list_user)
                 if to_watch_id is not None:
-                    self._db_get_to_watch_users(to_watch_id)
+                    self.get_to_watch_users(to_watch_id)
                     return
                 lst_needed.append(str_to_watch_id)
 
             case RequestType.GET_RATINGS_TO_WATCH:  # (to_watch_id: list_ratings)
                 if to_watch_id is not None:
-                    self._db_get_ratings_to_watch(to_watch_id)
+                    self.get_ratings_to_watch(to_watch_id)
                     return
                 lst_needed.append(str_to_watch_id)
 
             case RequestType.GET_USER_RATINGS:  # (user_id: list_ratings)
                 if user_id is not None:
-                    self._db_get_user_ratings(user_id)
+                    self.get_user_ratings(user_id)
                     return
                 lst_needed.append(str_user_id)
 
             case RequestType.ADD_USER:
                 if user_id and user_name:
-                    raise NotImplementedError
+                    self.add_user(user_id=user_id, user_name=user_name)
 
                 lst_needed.extend([str_user_id, str_user_name])
 
             case RequestType.ADD_REVIEW:
                 if user_id and to_watch_id and (non_spoil_review or spoil_review or rating):
-                    raise NotImplementedError
+                    self.add_review(user_id=user_id,
+                                    to_watch_id=to_watch_id,
+                                    non_spoil_review=non_spoil_review,
+                                    spoil_review=spoil_review,
+                                    rating=rating)
+
                 lst_needed.extend([str_user_id, str_user_name, str_spoil_review, str_non_spoil_review, str_rating])
 
             case RequestType.ADD_TO_WATCH:
                 if to_watch_id and to_watch_title:
-                    raise NotImplementedError
+                    self.add_to_watch(to_watch_id=to_watch_id, to_watch_title=to_watch_title)
 
             case RequestType.CHANGE_REVIEW:
                 if user_id and to_watch_id and (non_spoil_review or spoil_review or rating):
-                    raise NotImplementedError
+                    self.change_review(user_id=user_id,
+                                       to_watch_id=to_watch_id,
+                                       non_spoil_review=non_spoil_review,
+                                       spoil_review=spoil_review,
+                                       rating=rating)
                 lst_needed.extend([str_user_id, str_user_name, str_spoil_review, str_non_spoil_review, str_rating])
 
             case RequestType.REMOVE_TO_WATCH:
                 if to_watch_id:
-                    raise NotImplementedError
+                    self.remove_to_watch(to_watch_id)
+
                 lst_needed.append(to_watch_id)
 
             case RequestType.REMOVE_REVIEW:
                 if to_watch_id and user_id:
-                    raise NotImplementedError
+                    self.remove_review(to_watch_id=to_watch_id, user_id=user_id)
+
                 lst_needed.extend([to_watch_id, user_id])
 
             case RequestType.REMOVE_USER:
                 if user_id:
-                    raise NotImplementedError
+                    self.remove_user(user_id)
+
                 lst_needed.extend(user_id)
+
+            case RequestType.PICK_MOVIE:
+                if user_id:
+                    self.pick_movie(user_id)
+
+                lst_needed.append(user_id)
 
             case _:
                 raise NotImplementedError(
@@ -197,4 +241,3 @@ class PyDatabase:
         raise ValueError(
             f"Wrong arguments for {request_type.name}:"
             f" {options.keys()} where passed when {lst_needed} was needed.")
-

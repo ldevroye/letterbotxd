@@ -18,10 +18,6 @@ Based on the famous [letterbox](https://letterboxd.com/)
 
 ## Dependencies
 
-<a href="https://pypi.org/project/python-discord/" target="_blank">
-Discord html
-</a>
-
 - [Discord](https://pypi.org/project/python-discord/)
 - [Sqlite3](https://pypi.org/project/db-sqlite3/)
 

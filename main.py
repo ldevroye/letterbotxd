@@ -1,12 +1,24 @@
+import shutil
+
 from src.db import *
 from src.my_bot import *
+import os
 
 CONFIG: dict[str: str] = dict()
 intents = discord.Intents.default()
 intents.message_content = True
 
 
+def check_env():
+    env: Final[str] = '.env'
+    exmpl: Final[str] = '.env.example'
+
+    if not os.path.exists(env):
+        shutil.copy(exmpl, env)
+
+
 def get_env() -> dict[str: str]:
+    check_env()
     load_dotenv()
 
     to_ret: dict[str: str] = dict()

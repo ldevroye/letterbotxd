@@ -1,7 +1,7 @@
 # letterbotxd
 Discord Python Bot for reviews and film selection on your server.
 
-Based on the famous [letterbox](https://letterboxd.com/){:target="_blank" rel="noopener"}
+Based on the famous [letterbox](https://letterboxd.com/)
 
 ## Authors
 - ldevroye
@@ -18,8 +18,9 @@ Based on the famous [letterbox](https://letterboxd.com/){:target="_blank" rel="n
 
 ## Dependencies
 
-- [Discord](https://pypi.org/project/python-discord/){:target="_blank" rel="noopener"}
-- [Sqlite3](https://pypi.org/project/db-sqlite3/){:target="_blank" rel="noopener"}
+<a href="https://pypi.org/project/python-discord/" target="_blank">Discord html<\a>
+- [Discord](https://pypi.org/project/python-discord/)
+- [Sqlite3](https://pypi.org/project/db-sqlite3/)
 
 The project is kept as much strong typed as possible
 

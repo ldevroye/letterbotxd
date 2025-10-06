@@ -1,5 +1,6 @@
 import os
 import discord
+import shlex
 from discord import Intents
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -31,10 +32,56 @@ class MyBot(commands.Bot):
 
         print(f"Message ({message.author.name}): '{message.content}'")
 
+    async def interact_db(self, request_type: RequestType, **options):
+        self._db.interact_db(request_type=request_type, **options)
+
     async def handle_command(self, message):
         print(f"Command ({message.author.id}): {message.content}")
 
-        self._db.interact_db(RequestType.ADD_REVIEW, user_idd=1, review="hehe")
+        msg_lst: list[str] = shlex.split(message.content[len(self._prefix):])
+        print(f"msg list: {msg_lst}, len:{len(msg_lst)}")
+        cmd: str = msg_lst[0].upper()
+
+        cmd_list: list[str] = [r.name.upper() for r in RequestType if not r.name.startswith('_')]
+
+        if cmd == cmd_list[0]:  # GET_USER
+            user_id = message.author.id
+            await self.interact_db(RequestType.GET_USER, user_id=user_id)
+
+        elif cmd == cmd_list[1]:  # GET_TO_WATCH
+            pass
+
+        elif cmd == cmd_list[2]:  # GET_REVIEW
+            pass
+
+        elif cmd == cmd_list[3]:  # GET_RATING
+            pass
+        elif cmd == cmd_list[4]:  # GET_LIST_USER_TO_WATCH
+            pass
+        elif cmd == cmd_list[5]:  # GET_LIST_TO_WATCH_USERS
+            pass
+        elif cmd == cmd_list[6]:  # GET_RATINGS_TO_WATCH
+            pass
+        elif cmd == cmd_list[7]:  # GET_USER_RATINGS
+            pass
+        elif cmd == cmd_list[8]:  # ADD_USER
+            pass
+        elif cmd == cmd_list[9]:  # ADD_TO_WATCH
+            pass
+        elif cmd == cmd_list[10]:  # ADD_REVIEW
+            pass
+        elif cmd == cmd_list[11]:  # CHANGE_REVIEW
+            pass
+        elif cmd == cmd_list[12]:  # REMOVE_TO_WATCH
+            pass
+        elif cmd == cmd_list[13]:  # REMOVE_REVIEW
+            pass
+        elif cmd == cmd_list[14]:  # REMOVE_USER
+            pass
+
+        else:
+            raise NotImplementedError(
+                f"Command {cmd} not known, try one among: \n\t{cmd_list}")
 
 
 if __name__ == '__main__':

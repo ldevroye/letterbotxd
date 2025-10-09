@@ -14,11 +14,11 @@ class PyDatabase:
         No review in the cache as they are too long and not requested often.
         """
         self._lst_movie: list[to_watch] = list()
-
         # {movie: {user: rating}}
         self._lst_ratings: dict[id: dict[id: rate]] = dict()
 
         self._db: SqlDatabase = sql_db
+
 
     def get_average_rating(self, m_id: id) -> rate:
         if self._lst_ratings is None:
@@ -30,9 +30,6 @@ class PyDatabase:
             raise KeyError("This movie/anim doesn't exists in the list")
 
         return sum(rates.values) / len(rates)
-
-    def _execute(self, request: str):
-        self._db._execute(request)
 
     def get_user(self, user_id: str):
         raise NotImplementedError
@@ -61,7 +58,7 @@ class PyDatabase:
     def add_user(self, user_id: str, user_name: str):
         print(f"interact {user_id} {user_name}")
     
-        self._execute(f"INSERT INTO user (id,username) VALUES('{user_id}', '{user_name}');")
+        self._db.insert_row('user', {'id': user_id, 'username': user_name})
 
     def add_to_watch(self, to_watch_id: str, to_watch_title: str, to_watch_desc: str = None):
         raise NotImplementedError

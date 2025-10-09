@@ -22,7 +22,7 @@ class Table:
         return deepcopy(self._dict_columns)
 
     @property
-    def columns_name(self):
+    def columns_names(self):
         return self._dict_columns.keys()
 
     @property
@@ -72,7 +72,11 @@ class SqlDatabase:
             set_key(".env", "DB_CREATE", 'False')
         
 
-    def _execute(self, query: str):
+    @property
+    def tables(self) -> set[Table]:
+        return deepcopy(self._tables)
+
+    def __execute(self, query: str):
         print(f"new query: '{query}'")
         self._cursor.execute(query)
         self._commit()
@@ -99,7 +103,7 @@ class SqlDatabase:
         to_link = to_link[:len(to_link)-(len(separator)-1)] + ');'
 
         print(to_link)
-        self._execute(to_link)
+        self.__execute(to_link)
         return
 
     def _create_table(self, table: Table, commit: bool = True) -> str | None:
@@ -116,7 +120,7 @@ class SqlDatabase:
         if commit:
             to_create = to_create[:len(to_create) - len(separator)] + ');'
             print(to_create)
-            self._execute(to_create)
+            self.__execute(to_create)
             return
 
         return to_create
@@ -129,6 +133,30 @@ class SqlDatabase:
         !!        
         """
 
+        self._create_table(table_user)
+        self._create_table(table_to_watch)
+        self._create_link_table(table_link, 'id')
+        self._create_link_table(table_review, 'id')
+
+        '''
+            look to link keys
+            FOREIGN KEY (user_id) REFERENCES users (user_id),
+            FOREIGN KEY (movie_id) REFERENCES movies (movie_id),
+            PRIMARY KEY (user_id, movie_id)
+
+        '''
+
+    def _connect(self, file_name: str):
+        try:
+            self._database = sqlite.connect(file_name)
+        except:
+            raise ConnectionError(f"Can't connect to the given database {file_name}")
+
+        self._cursor = self._database.cursor()
+
+        self.connect_tables()
+
+    def connect_tables(self):
         table_user: Table = Table('user',
                                   {
                                       'id': [self._text_type, self._primary_key_type, self._not_null_type],
@@ -162,26 +190,7 @@ class SqlDatabase:
         self._tables.add(table_to_watch)
         self._tables.add(table_link)
         self._tables.add(table_review)
-        self._create_table(table_user)
-        self._create_table(table_to_watch)
-        self._create_link_table(table_link, 'id')
-        self._create_link_table(table_review, 'id')
 
-        '''
-            look to link keys
-            FOREIGN KEY (user_id) REFERENCES users (user_id),
-            FOREIGN KEY (movie_id) REFERENCES movies (movie_id),
-            PRIMARY KEY (user_id, movie_id)
-
-        '''
-
-    def _connect(self, file_name: str):
-        try:
-            self._database = sqlite.connect(file_name)
-        except:
-            raise ConnectionError(f"Can't connect to the given database {file_name}")
-
-        self._cursor = self._database.cursor()
 
 
     def _clean(self):
@@ -192,3 +201,52 @@ class SqlDatabase:
             self._database.commit()
         except:
             raise ConnectionError("Could not commit to the database")
+
+    def _get_table_by_name(self, table_name: str) -> Table:
+        print(f"searching for table '{table_name}'")
+        print(len(self._tables))
+        for table in self._tables:
+            print(f"checking table '{table.name}'")
+            if table.name == table_name:
+                return table
+        raise ValueError(f"Table '{table_name}' not found in database.")
+
+    def insert_row(self, table_name: str, row_data: dict):
+        """
+        Insert a row into the given table by name.
+        row_data: dict mapping column names to values.
+        """
+        table = self._get_table_by_name(table_name)
+        columns = ', '.join(table.columns_names)
+        placeholders = ', '.join(['?' for _ in row_data])
+        values = tuple(row_data.values())
+        query = f"INSERT INTO {table.name} ({columns}) VALUES ({placeholders})"
+        print(f"Inserting row: {query} with values {values}")
+        self._cursor.execute(query, values)
+        self._commit()
+
+    def update_row(self, table_name: str, set_data: dict, where: str):
+        """
+        Update rows in the given table by name.
+        set_data: dict mapping column names to new values.
+        where: SQL WHERE clause (without 'WHERE').
+        """
+        table = self._get_table_by_name(table_name)
+        set_clause = ', '.join([f"{k}=?" for k in table.columns_names])
+        values = tuple(set_data.values())
+        query = f"UPDATE {table.name} SET {set_clause} WHERE {where}"
+        print(f"Updating row: {query} with values {values}")
+        self._cursor.execute(query, values)
+        self._commit()
+
+    def delete_row(self, table_name: str, where: str):
+        """
+        Delete rows from the given table by name.
+        where: SQL WHERE clause (without 'WHERE').
+        """
+        table = self._get_table_by_name(table_name)
+        query = f"DELETE FROM {table.name} WHERE {where}"
+        print(f"Deleting row: {query}")
+        self._cursor.execute(query)
+        self._commit()
+

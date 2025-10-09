@@ -34,12 +34,14 @@ class MyBot(commands.Bot):
 
         if message.content.startswith(self._prefix):
             print(f"cmd inputed : {message.content[len(self._prefix)-1:]}")
+            await self.handle_command(message)
             return
 
         print(f"Message ({message.author.name}): '{message.content}'")
 
     async def interact_db(self, request_type: RequestType, **options):
         self._db.interact_db(request_type=request_type, **options)
+
 
     async def handle_command(self, message):
         print(f"Command ({message.author.id}): {message.content}")
@@ -49,6 +51,8 @@ class MyBot(commands.Bot):
         cmd: str = msg_lst[0].upper()
 
         cmd_list: list[str] = [r.name.upper() for r in RequestType if not r.name.startswith('_')]
+
+
 
         if cmd == cmd_list[0]:  # GET_USER
             user_id = message.author.id
@@ -71,7 +75,11 @@ class MyBot(commands.Bot):
         elif cmd == cmd_list[7]:  # GET_USER_RATINGS
             pass
         elif cmd == cmd_list[8]:  # ADD_USER
-            pass
+            user_id = message.author.id
+            user_name = msg_lst[1]
+            print(f"interact {user_id} {user_name}")
+            await self.interact_db(RequestType.ADD_USER, user_id=user_id, user_name=user_name)
+            
         elif cmd == cmd_list[9]:  # ADD_TO_WATCH
             pass
         elif cmd == cmd_list[10]:  # ADD_REVIEW

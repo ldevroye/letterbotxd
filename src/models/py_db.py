@@ -31,6 +31,9 @@ class PyDatabase:
 
         return sum(rates.values) / len(rates)
 
+    def _execute(self, request: str):
+        self._db._execute(request)
+
     def get_user(self, user_id: str):
         raise NotImplementedError
 
@@ -56,7 +59,9 @@ class PyDatabase:
         raise NotImplementedError
 
     def add_user(self, user_id: str, user_name: str):
-        raise NotImplementedError
+        print(f"interact {user_id} {user_name}")
+    
+        self._execute(f"INSERT INTO user (id,username) VALUES('{user_id}', '{user_name}');")
 
     def add_to_watch(self, to_watch_id: str, to_watch_title: str, to_watch_desc: str = None):
         raise NotImplementedError
@@ -109,7 +114,7 @@ class PyDatabase:
         for k in options.keys():
             if k == str_user_id:
                 user_id = options[str_user_id]
-            if k == str_user_name:
+            elif k == str_user_name:
                 user_name = options[str_user_name]
 
             elif k == str_to_watch_id:
@@ -129,6 +134,7 @@ class PyDatabase:
 
         if len(lst_unknown) > 0:
             print_err(f"Unknown keys: {lst_unknown}")
+            return        
 
         # POV: you're piratesoftware
         lst_needed: list[str] = []
@@ -184,6 +190,7 @@ class PyDatabase:
             case RequestType.ADD_USER:
                 if user_id and user_name:
                     self.add_user(user_id=user_id, user_name=user_name)
+                    return
 
                 lst_needed.extend([str_user_id, str_user_name])
 
@@ -194,12 +201,16 @@ class PyDatabase:
                                     non_spoil_review=non_spoil_review,
                                     spoil_review=spoil_review,
                                     rating=rating)
+                    return
 
                 lst_needed.extend([str_user_id, str_user_name, str_spoil_review, str_non_spoil_review, str_rating])
 
             case RequestType.ADD_TO_WATCH:
                 if to_watch_id and to_watch_title:
                     self.add_to_watch(to_watch_id=to_watch_id, to_watch_title=to_watch_title)
+                    return
+
+                    # TODO add lst_needed
 
             case RequestType.CHANGE_REVIEW:
                 if user_id and to_watch_id and (non_spoil_review or spoil_review or rating):
@@ -208,29 +219,33 @@ class PyDatabase:
                                        non_spoil_review=non_spoil_review,
                                        spoil_review=spoil_review,
                                        rating=rating)
+
+                    return
+
                 lst_needed.extend([str_user_id, str_user_name, str_spoil_review, str_non_spoil_review, str_rating])
 
             case RequestType.REMOVE_TO_WATCH:
                 if to_watch_id:
                     self.remove_to_watch(to_watch_id)
-
+                    return
                 lst_needed.append(to_watch_id)
 
             case RequestType.REMOVE_REVIEW:
                 if to_watch_id and user_id:
                     self.remove_review(to_watch_id=to_watch_id, user_id=user_id)
-
+                    return
                 lst_needed.extend([to_watch_id, user_id])
 
             case RequestType.REMOVE_USER:
                 if user_id:
                     self.remove_user(user_id)
-
+                    return
                 lst_needed.extend(user_id)
 
             case RequestType.PICK_MOVIE:
                 if user_id:
                     self.pick_movie(user_id)
+                    return
 
                 lst_needed.append(user_id)
 

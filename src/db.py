@@ -65,11 +65,17 @@ class SqlDatabase:
         self._foreign_key: Final[str]       = os.getenv("DB_FOREIGN_KEY")
         self._references: Final[str]        = os.getenv("DB_REFERENCES")
 
+        self._connect(file_name)
+        
         if bool_create:
             self._create(file_name)
             set_key(".env", "DB_CREATE", 'False')
-        else:
-            self._connect()
+        
+
+    def _execute(self, query: str):
+        print(f"new query: '{query}'")
+        self._cursor.execute(query)
+        self._commit
 
     def _create_link_table(self, table: Table, var_to_link: str):
         """
@@ -93,8 +99,7 @@ class SqlDatabase:
         to_link = to_link[:len(to_link)-(len(separator)-1)] + ');'
 
         print(to_link)
-        self._cursor.execute(to_link)
-        self._commit()
+        self._execute(to_link)
         return
 
     def _create_table(self, table: Table, commit: bool = True) -> str | None:
@@ -107,23 +112,16 @@ class SqlDatabase:
 
             to_create += separator  # lower index by 1 to remove last ','
 
+        
         if commit:
             to_create = to_create[:len(to_create) - len(separator)] + ');'
             print(to_create)
-            self._cursor.execute(to_create)
-            self._commit()
+            self._execute(to_create)
             return
 
         return to_create
 
     def _create(self, file_name: str):
-        try:
-            self._database = sqlite.connect(file_name)
-        except:
-            raise ConnectionError(f"Can't connect to the given database {file_name}")
-
-        self._cursor = self._database.cursor()
-
 
         """
         !!
@@ -164,7 +162,6 @@ class SqlDatabase:
         self._tables.add(table_to_watch)
         self._tables.add(table_link)
         self._tables.add(table_review)
-
         self._create_table(table_user)
         self._create_table(table_to_watch)
         self._create_link_table(table_link, 'id')
@@ -178,8 +175,14 @@ class SqlDatabase:
 
         '''
 
-    def _connect(self):
-        pass
+    def _connect(self, file_name: str):
+        try:
+            self._database = sqlite.connect(file_name)
+        except:
+            raise ConnectionError(f"Can't connect to the given database {file_name}")
+
+        self._cursor = self._database.cursor()
+
 
     def _clean(self):
         pass

@@ -55,9 +55,7 @@ class PyDatabase:
     def get_user_ratings(self, user_id: str):
         raise NotImplementedError
 
-    def add_user(self, user_id: str, user_name: str):
-        print(f"interact {user_id} {user_name}")
-    
+    def add_user(self, user_id: str, user_name: str):    
         self._db.insert_row('user', {'id': user_id, 'username': user_name})
 
     def add_to_watch(self, to_watch_id: str, to_watch_title: str, to_watch_desc: str = None):

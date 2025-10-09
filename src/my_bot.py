@@ -47,7 +47,6 @@ class MyBot(commands.Bot):
         print(f"Command ({message.author.id}): {message.content}")
 
         msg_lst: list[str] = shlex.split(message.content[len(self._prefix):])
-        print(f"msg list: {msg_lst}, len:{len(msg_lst)}")
         cmd: str = msg_lst[0].upper()
 
         cmd_list: list[str] = [r.name.upper() for r in RequestType if not r.name.startswith('_')]
@@ -77,7 +76,6 @@ class MyBot(commands.Bot):
         elif cmd == cmd_list[8]:  # ADD_USER
             user_id = message.author.id
             user_name = msg_lst[1]
-            print(f"interact {user_id} {user_name}")
             await self.interact_db(RequestType.ADD_USER, user_id=user_id, user_name=user_name)
             
         elif cmd == cmd_list[9]:  # ADD_TO_WATCH

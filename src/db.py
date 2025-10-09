@@ -75,7 +75,7 @@ class SqlDatabase:
     def _execute(self, query: str):
         print(f"new query: '{query}'")
         self._cursor.execute(query)
-        self._commit
+        self._commit()
 
     def _create_link_table(self, table: Table, var_to_link: str):
         """

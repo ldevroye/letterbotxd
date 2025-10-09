@@ -41,19 +41,19 @@ def start_db() -> SqlDatabase:
     name: str = CONFIG["DB_NAME"]
     create: bool = eval(CONFIG["DB_CREATE"])
     erase: bool = eval(CONFIG["DB_ERASE"])
-    #try:
-    print(
-        f'Starting database {name} create from scratch:{create}...')
-    if erase:
-        if os.path.exists(name):
-            os.remove(name)
+    try:
+        print(
+            f'Starting database {name} create from scratch:{create}...')
+        if erase:
+            if os.path.exists(name):
+                os.remove(name)
 
-        set_key('.env', 'DB_ERASE', 'False')
+            set_key('.env', 'DB_ERASE', 'False')
 
-    to_ret = SqlDatabase(create, name)
-    #except:
-     #   raise RuntimeError(
-      #      f'Could not start the database {name} try looking at the .env and "{name}"')
+        to_ret = SqlDatabase(create, name)
+    except:
+       raise RuntimeError(
+          f'Could not start the database {name} try looking at the .env and "{name}"')
 
     return to_ret
 
